@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 import axios from "axios";
 
-initialValues = {
+const initialValues = {
   credentials: {
     username: "",
     password: "",
@@ -10,53 +11,32 @@ initialValues = {
 };
 const Login = () => {
   const [values, setValues] = useState(initialValues);
-  // make a post request to retrieve a token from the api
-  // when you have handled the token, navigate to the BubblePage route
-
-  useEffect(() => {
-    // axios
-    //   .delete(`http://localhost:5000/api/colors/1`, {
-    //     headers: {
-    //       authorization:
-    //         "ahuBHejkJJiMDhmODZhZi0zaeLTQ4ZfeaseOGZgesai1jZWYgrTA07i73Gebhu98",
-    //     },
-    //   })
-    //   .then((res) => {
-    //     axios
-    //       .get(`http://localhost:5000/api/colors`, {
-    //         headers: {
-    //           authorization: "",
-    //         },
-    //       })
-    //       .then((res) => {
-    //         console.log(res);
-    //       });
-    //     console.log(res);
-    //   });
-  });
+  const history = useHistory();
 
   const onChange = (e) => {
     setValues({
-      ...state,
-      [e.target.name]: e.target.value,
+      ...values,
+      credentials: {
+        ...values.credentials,
+        [e.target.name]: e.target.value,
+      },
     });
   };
 
   const onSubmit = (e) => {
+    console.log(values);
     e.preventDefault();
     axios
-      .put(`http://localhost:5000/api/login/`, {
-        username: "Lambda School",
-        password: "i<3Lambd4",
-      })
+      .post(`http://localhost:5000/api/login/`, values.credentials)
       .then((res) => {
         console.log(res.data);
         localStorage.setItem("token", res.data.payload); //double check this res.data
+        history.push("/BubblePage");
       })
       .catch((err) => {
         console.log(err);
-        state.error = "Username or Password not valid.";
-      }, []); //dependency array?
+        values.error = "Username or Password not valid.";
+      });
   };
 
   return (
@@ -70,7 +50,7 @@ const Login = () => {
           <input
             name="username"
             type="text"
-            value={state.username}
+            value={values.credentials.username}
             onChange={onChange}
           />
         </label>
@@ -78,7 +58,7 @@ const Login = () => {
           <input
             name="password"
             type="text"
-            value={state.password}
+            value={values.credentials.password}
             onChange={onChange}
           />
         </label>

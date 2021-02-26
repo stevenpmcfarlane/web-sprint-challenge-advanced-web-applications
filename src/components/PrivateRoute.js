@@ -6,7 +6,6 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
   //const Component = props.component
   return (
     <Route
-      //don't know about this stuff
       {...rest}
       render={(props) => {
         if (localStorage.getItem("token")) {

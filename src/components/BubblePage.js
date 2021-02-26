@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axiosWithAuth from "../helpers/axiosWithAuth";
 
 import Bubbles from "./Bubbles";
 import ColorList from "./ColorList";
@@ -7,29 +7,15 @@ import ColorList from "./ColorList";
 const BubblePage = () => {
   const [colorList, setColorList] = useState([]);
 
-  getColorData = () => {
-    //needs an authorization header to pass the middleware function in the server
-    const token = JSON.parse(localStorage.getItem("token"));
+  useEffect(() => {
     axiosWithAuth()
       .get("/api/colors")
       .then((res) => {
         console.log(res);
-        //set data to state - but only the objects for the U.S. and State of Hawaii,
-        //and only for regular gasoline
-        this.setColorList({
-          colorList: res.data.data, //double check
-          // .filter((price) => {
-          //   return (
-          //     price.location === "US" || price.location === "State of Hawaii"
-          //   );
-          // })
-          // .filter((price) => {
-          //   return price.type === "Gasoline - regular";
-          // }), // write the algorithm to get only the data we want
-        });
+        setColorList(res.data);
       })
       .catch((err) => console.log({ err }));
-  };
+  }, [axiosWithAuth, setColorList]);
 
   return (
     <>
