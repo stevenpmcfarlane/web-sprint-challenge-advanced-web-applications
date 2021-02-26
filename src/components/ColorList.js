@@ -14,13 +14,30 @@ const ColorList = ({ colors, updateColors }) => {
     setEditing(true);
     setColorToEdit(color);
   };
-
+    //big mess
   const saveEdit = e => {
     e.preventDefault();
+    axios.get(`http://localhost:5000/colors/${id}`).then((res) => {
+      setColorToEdit(res.data);
+    });
+  }, []);
 
+
+  const handleEditClick = () => {
+    push(`/item-update/${id}`);
   };
+  
 
   const deleteColor = color => {
+    axios
+    .delete(`http://localhost:5000/colors/${id}`)
+    .then((res) => {
+      setItems(res.data);
+      push("/color-list");//probably wrong
+    })
+    .catch((err) => {
+      console.log(err);
+    });
   };
 
   return (
